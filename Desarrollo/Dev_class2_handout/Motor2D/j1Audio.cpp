@@ -184,26 +184,33 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 
 // Load
 void j1Audio::Load(const pugi::xml_node&  savegame) {
-	volume = savegame.attribute("volume").as_int();
+
+	volume = savegame.child("volume").attribute("music").as_float(0);
 	Mix_VolumeMusic(volume);
 }
 
 //Save
 void j1Audio::Save(const pugi::xml_node&  savegame)const {
-	savegame.attribute("volume").set_value(volume);
+	savegame.child("volume").attribute("music").set_value(volume);
 }
 
 //Volume
 
-void j1Audio::VolumeUp(const pugi::xml_node&  config) {
-	volume++;
-	Mix_VolumeMusic(volume);
-	LOG("%i", volume);
-
+void j1Audio::VolumeUp() {
+	if (volume < 1) {
+		volume = (volume * 128)+0.5f;
+		Mix_VolumeMusic(volume);
+		volume /= 128;
+		LOG("%f", volume);
+	}
 }
 
-void j1Audio::VolumeDown(const pugi::xml_node&  config) {	
-	volume--;
-	Mix_VolumeMusic(volume);
-	LOG("%i", volume);
+
+void j1Audio::VolumeDown() {
+	if (volume > 0) {
+		volume = (volume * 128) - 0.5f;
+		Mix_VolumeMusic(volume);
+		volume /= 128;
+		LOG("%f", volume);
+	}
 }

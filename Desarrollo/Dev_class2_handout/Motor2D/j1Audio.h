@@ -40,9 +40,9 @@ public:
 
 	//Volume
 
-	void VolumeUp(const pugi::xml_node&  savegame);
+	void VolumeUp();
 
-	void VolumeDown(const pugi::xml_node&  savegame);
+	void VolumeDown();
 
 
 private:
@@ -50,7 +50,7 @@ private:
 	_Mix_Music*			music;
 	p2List<Mix_Chunk*>	fx;
 	
-	int volume;
+	float volume;
 	mutable	int vol;
 };
 
