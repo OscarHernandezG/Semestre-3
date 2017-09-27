@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="40" height="40" tilewidth="32" tileheight="32">
+<map version="1.0" tiledversion="1.0.1" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" source="desert.tsx"/>
  <layer name="Ground" width="40" height="40">
   <data encoding="base64" compression="zlib">
-   eJztmNkKwjAQRaN9cAPrAq5Yq3Xf6v9/nSM2VIbQJjEZR+nDwQZScrwztoORECLySBcIgZ7nc2y4KfyWDLx+Jb9nViNgDEwY+KioAXUgQN4+zpoCMwPmQAtoAx2CLFbA2oDEo9+hwG8DnIDtF/2K8ks086Tw2zH0uyMv7HcRr/6/EvvhnsPrsrxwX7rwU/0ODig/eV3mh3N1ld8eraWPaX6+64s9McesfrqcHfg1MpoifxcVEWjukyw+9AtFPl/I71pER3Of6j4bv7HI54s+MChhqLlPdZ/P3qMmFuo5h5NnTOhjM5tReN2yT51n5/v7J3F0vi46fk+ne7aX0i9l6If7mpufTX3f5wsqv9TAD2fJLT9VrTn7UeZnM5tR+v0LMQOHXwFnxe2/warGFRWf8QDjOLfP
+   eJztmNtuwjAMhj24GAdpjE3iOBisO5Qz7/90GNGqzPJSJ2lMmHrxqa2UKB9/3NRiDgDzgDwhPeQ58Dou7Bm/9wi87iW/c1YDZIiMIvDheEAaSJN4h1hrjEwsmCJtpIN0FbJYIh8WJAH9UoPfJ7JGvm7oZ8ovEeap4fcdod+ReFG/LVzqf6fsR2uOPpflReuyCj/uPUhJfvl9mR/Ntar8fshz7mObX+j9pZ6UVbZ/UjYV+D1mtKD4FploCsflzDz9elD0F/lvNdEVjuPmufgNoegv+shLCa/Ccdy8kLWnzQL4PsfkyfVKoR1tcvN5F116M9s1XPz22VVydl5/fxKLNajfG/w+byRzJX5np2M21sfP9tw4KPlx58pf5wataw0/HyR+1/2Flt/Bwo9mGVt+3F7H7KeZn0tvpun3X1hE4HAv0Kxi+2+w3uOaGj9O8hO1xQ==
   </data>
  </layer>
 </map>
