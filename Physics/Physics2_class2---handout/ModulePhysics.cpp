@@ -40,13 +40,13 @@ bool ModulePhysics::Start()
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
-
+	b->GetPosition();
 	b2CircleShape shape;
 	
 	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
 
 	b2FixtureDef fixture;
-	fixture.restitution = 2;
+
 	fixture.shape = &shape;
 	b->CreateFixture(&fixture);
 
@@ -65,99 +65,7 @@ update_status ModulePhysics::PreUpdate()
 update_status ModulePhysics::PostUpdate()
 {
 	// On space bar press, create a circle on mouse position
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25);
-	}
 
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 25, 25);
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// TODO 3: Create a chain shape using those vertices
-		// remember to convert them from pixels to meters!
-		
-		int points[24] = {
-			-38, 80,
-			-44, -54,
-			-16, -60,
-			-16, -17,
-			19, -19,
-			19, -79,
-			61, -77,
-			57, 73,
-			17, 78,
-			20, 16,
-			-25, 13,
-			-9, 72
-		};
-
-		int elephant[114] = {
-			24, 308,
-			31, 259,
-			60, 197,
-			155, 98,
-			264, 52,
-			364, 47,
-			450, 58,
-			516, 49,
-			577, 26,
-			691, 33,
-			775, 58,
-			821, 104,
-			859, 183,
-			875, 302,
-			846, 391,
-			793, 454,
-			731, 507,
-			730, 538,
-			759, 556,
-			759, 575,
-			733, 596,
-			706, 603,
-			674, 563,
-			662, 516,
-			677, 475,
-			723, 426,
-			723, 403,
-			700, 393,
-			612, 436,
-			593, 467,
-			588, 503,
-			592, 543,
-			623, 616,
-			586, 628,
-			499, 627,
-			466, 615,
-			473, 560,
-			475, 515,
-			458, 474,
-			440, 460,
-			385, 476,
-			311, 455,
-			286, 468,
-			275, 496,
-			287, 555,
-			319, 614,
-			283, 628,
-			192, 624,
-			153, 613,
-			136, 593,
-			151, 461,
-			147, 414,
-			106, 360,
-			85, 315,
-			71, 277,
-			50, 298,
-			431, 272
-		};
-
-		CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), elephant);
-
-	}
 
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
@@ -260,12 +168,14 @@ void ModulePhysics::CreateCircle(int mouse_x, int mouse_y, int radius) {
 	b2Body* b = world->CreateBody(&body);
 
 	b2CircleShape shape;
-	shape.m_radius = radius;
+	shape.m_radius = PIXEL_TO_METERS(radius);
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
-	fixture.restitution = 2.0f;
+	fixture.density = 1.0f;
+	fixture.restitution = 1.0f;
 
 	b->CreateFixture(&fixture);
+	circles.addBody(b);
 }
 
 void ModulePhysics::CreateRectangle(int mouse_x, int mouse_y, int h, int w) {
@@ -283,18 +193,19 @@ void ModulePhysics::CreateRectangle(int mouse_x, int mouse_y, int h, int w) {
 
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
-	fixture.restitution = 2.0f;
-	b->CreateFixture(&fixture);
 
+
+	b->CreateFixture(&fixture);
+	boxes.addBody(b);
 	// TODO 2: To have the box behave normally, set fixture's density to 1.0f
 }
 
 void ModulePhysics::CreateChain(int mouse_x, int mouse_y, int* vec) {
 
-	b2Vec2 newvec[57];
+	b2Vec2 newvec[34];
 
-	for (int j = 0, i = 0; i < 57; i++) {
-		newvec[i] = { PIXEL_TO_METERS(vec[j++]) / 4, PIXEL_TO_METERS(vec[j++]) / 4 };
+	for (int j = 0, i = 0; i < 34; i++) {
+		newvec[i] = { PIXEL_TO_METERS(vec[j++]), PIXEL_TO_METERS(vec[j++]) };
 		LOG("%i", i);
 	}
 
@@ -305,11 +216,26 @@ void ModulePhysics::CreateChain(int mouse_x, int mouse_y, int* vec) {
 	b2Body* b = world->CreateBody(&body);
 
 	b2ChainShape shape;
-	shape.CreateLoop(newvec, 57);
+	shape.CreateLoop(newvec, 34);
 	b2FixtureDef fixture;
 
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
-	fixture.restitution = 2.0f;
+
 	b->CreateFixture(&fixture);
+	chain.addBody(b);
+}
+
+int List::Position_x(b2Body* body) {
+	b2Vec2 pos = body->GetPosition();
+	return METERS_TO_PIXELS(pos.x);
+}
+int List::Position_y(b2Body* body) {
+	b2Vec2 pos = body->GetPosition();
+	return METERS_TO_PIXELS(pos.y);
+}
+
+int List::GetRotation(b2Body* body) {
+	
+	return RADTODEG * body->GetAngle();
 }
