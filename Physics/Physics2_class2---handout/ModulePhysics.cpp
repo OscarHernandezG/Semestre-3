@@ -5,7 +5,6 @@
 #include "ModulePhysics.h"
 #include "math.h"
 
-#include "Box2D/Box2D/Box2D.h"
 
 #ifdef _DEBUG
 #pragma comment( lib, "Box2D/libx86/Debug/Box2D.lib" )
@@ -226,16 +225,16 @@ void ModulePhysics::CreateChain(int mouse_x, int mouse_y, int* vec) {
 	chain.addBody(b);
 }
 
-int List::Position_x(b2Body* body) {
+b2Vec2 b2List::Position(b2Body* body) {
 	b2Vec2 pos = body->GetPosition();
-	return METERS_TO_PIXELS(pos.x);
-}
-int List::Position_y(b2Body* body) {
-	b2Vec2 pos = body->GetPosition();
-	return METERS_TO_PIXELS(pos.y);
+	pos.x = METERS_TO_PIXELS(pos.x);
+	pos.y = METERS_TO_PIXELS(pos.y);
+	return pos;
 }
 
-int List::GetRotation(b2Body* body) {
+
+
+int b2List::GetRotation(b2Body* body) {
 	
 	return RADTODEG * body->GetAngle();
 }

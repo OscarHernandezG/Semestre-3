@@ -179,29 +179,24 @@ update_status ModuleSceneIntro::Update()
 
 	node* iterator = App->physics->circles.first;
 		while (iterator != nullptr) {
-			int x = App->physics->circles.Position_x(iterator->body);
-			int y = App->physics->circles.Position_y(iterator->body);
-
-			App->renderer->Blit(circle, x - 25, y - 25, 0, 1,  App->physics->circles.GetRotation(iterator->body));
+			b2Vec2 pos = App->physics->circles.Position(iterator->body);
+			App->renderer->Blit(circle, pos.x - 25, pos.y - 25, 0, 1,  App->physics->circles.GetRotation(iterator->body));
 			iterator = iterator->next;
 		}
 
 
 		iterator = App->physics->boxes.first;
 		while (iterator != nullptr) {
-			int x = App->physics->boxes.Position_x(iterator->body);
-			int y = App->physics->boxes.Position_y(iterator->body);
+			b2Vec2 pos = App->physics->boxes.Position(iterator->body);
 
-			App->renderer->Blit(box, x-50, y-25, 0, 1, App->physics->circles.GetRotation(iterator->body));
+			App->renderer->Blit(box, pos.x-50, pos.y-25, 0, 1, App->physics->circles.GetRotation(iterator->body));
 			iterator = iterator->next;
 		}
 	
 		iterator = App->physics->chain.first;
 		while (iterator != nullptr) {
-			int x = App->physics->chain.Position_x(iterator->body);
-			int y = App->physics->chain.Position_y(iterator->body);
-
-			App->renderer->Blit(rick, x, y, 0, 1, App->physics->circles.GetRotation(iterator->body));
+			b2Vec2 pos = App->physics->chain.Position(iterator->body);
+			App->renderer->Blit(rick, pos.x, pos.y, 0, 1, App->physics->chain.GetRotation(iterator->body));
 			iterator = iterator->next;
 		}
 

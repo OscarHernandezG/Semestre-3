@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "Globals.h"
 
+#include "Box2D/Box2D/Box2D.h"
+
 #define GRAVITY_X 0.0f
 #define GRAVITY_Y -7.0f
 
@@ -30,7 +32,7 @@ struct node
 
 };
 
-class List{
+class b2List{
 public:
 
 	node* first = nullptr;
@@ -53,9 +55,8 @@ public:
 		}
 	}
 
-	int Position_x(b2Body* body);
+	b2Vec2 Position(b2Body* body);
 
-	int Position_y(b2Body* body);
 
 	int GetRotation(b2Body* body);
 
@@ -81,9 +82,9 @@ public:
 	void CreateChain(int mouse_x, int mouse_y, int* vec);
 
 
-	List circles;
-	List boxes;
-	List chain;
+	b2List circles;
+	b2List boxes;
+	b2List chain;
 
 private:
 
