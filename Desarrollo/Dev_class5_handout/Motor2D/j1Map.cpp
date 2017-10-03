@@ -34,14 +34,15 @@ void j1Map::Draw()
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
 	p2List_item<TileSet*>*	blit_tilesets;
 	blit_tilesets = data.tilesets.start;
-	
+	SDL_Rect* rect;
+	int id = 0;
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; i < 6; j++) {
-				LOG("TEST");
 				if (blit_tilesets != nullptr) {
-				App->render->Blit(blit_tilesets->data->texture, 0, 0);
+				rect = &blit_tilesets->data->GetTileRect(id);
+				App->render->Blit(blit_tilesets->data->texture, 0, 0, rect);
 				blit_tilesets = blit_tilesets->next;
-				
+				id++;
 			}
 		}
 	}
@@ -335,3 +336,4 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 //	layer->gid
 	return ret;
 }
+
