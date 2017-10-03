@@ -193,7 +193,6 @@ void ModulePhysics::CreateRectangle(int mouse_x, int mouse_y, int h, int w) {
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 
-
 	b->CreateFixture(&fixture);
 	boxes.addBody(b);
 	// TODO 2: To have the box behave normally, set fixture's density to 1.0f
