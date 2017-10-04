@@ -12,8 +12,12 @@ struct MapLayer {
 
 	const char* name = nullptr;
 	int width, height;
-	unsigned int* gid;
+	unsigned int* data;
+	uint size_data = 0;
 
+	~MapLayer() {
+		RELEASE(data);
+	}
 };
 
 
