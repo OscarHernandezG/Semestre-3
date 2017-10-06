@@ -40,7 +40,7 @@ void j1Map::Draw()
 			x = y = h = w = 0;
 			for (int id = 0; id < layer->data->size_data; id++) {
 				rect = &blit_tilesets->data->GetTileRect(layer->data->data[id]);
-				App->render->Blit(blit_tilesets->data->texture, x, y, rect);
+				App->render->Blit(blit_tilesets->data->texture, x, y, rect,0.5);
 				w++;
 				if (w == layer->data->width) {
 					w = 0;
