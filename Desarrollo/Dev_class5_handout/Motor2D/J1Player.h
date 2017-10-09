@@ -41,7 +41,7 @@ private:
 	float angle=0;
 	p2Point<float> speed;
 	p2Point<float> movement = { 0,0 };
-	float a = 0.02;
+	float a = 0.002;
 	bool jump = true;
 };
 
