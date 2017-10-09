@@ -92,7 +92,7 @@ bool j1Player::Update(float dt)
 
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-		this->speed.y = -5;
+		this->speed.y = -2;
 
 
 	movement.x = speed.x;
