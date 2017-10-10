@@ -29,7 +29,7 @@ bool ModulePhysics::Start()
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
 	// TODO 3: You need to make ModulePhysics class a contact listener
-
+	world->SetContactListener(this);
 	// big static circle as "ground" in the middle of the screen
 	int x = SCREEN_WIDTH / 2;
 	int y = SCREEN_HEIGHT / 1.5f;
@@ -55,6 +55,7 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	world->Step(1.0f / 60.0f, 6, 2);
+
 
 	// TODO: HomeWork
 	/*
@@ -86,7 +87,8 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	pbody->width = pbody->height = radius;
-
+	pbody->body->SetUserData(pbody);
+	pbody->_audio = App->audio;
 	return pbody;
 }
 
@@ -110,6 +112,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	pbody->body = b;
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
+	pbody->_audio = App->audio;
 
 	return pbody;
 }
@@ -143,6 +146,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	pbody->width = pbody->height = 0;
+	pbody->_audio = App->audio;
 
 	return pbody;
 }
@@ -260,7 +264,20 @@ bool PhysBody::Contains(int x, int y) const
 	// TODO 1: Write the code to return true in case the point
 	// is inside ANY of the shapes contained by this body
 
-	return false;
+	bool ret = true;
+	b2Vec2 vec = { PIXEL_TO_METERS(x),PIXEL_TO_METERS(y) };
+
+	for (b2Fixture* iterator = body->GetFixtureList(); iterator != nullptr; iterator = iterator->GetNext()) {
+
+		b2Shape* shape = iterator->GetShape();
+		b2Transform transform = body->GetTransform();
+
+		ret = shape->TestPoint(transform, vec);
+	}
+
+	
+
+	return ret;
 }
 
 int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const
@@ -268,10 +285,29 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 	// TODO 2: Write code to test a ray cast between both points provided. If not hit return -1
 	// if hit, fill normal_x and normal_y and return the distance between x1,y1 and it's colliding point
 	int ret = -1;
+	bool hit = false;
+	b2RayCastOutput* output = nullptr;
+	b2RayCastInput input;
+	input.p1 = { PIXEL_TO_METERS(x1),PIXEL_TO_METERS(y1) };
+	input.p2 = { PIXEL_TO_METERS(x2),PIXEL_TO_METERS(y2) };
+	b2Transform transform = body->GetTransform();
+	for (b2Fixture* iterator = body->GetFixtureList(); iterator != nullptr; iterator = iterator->GetNext()) {
+		hit = iterator->GetShape()->RayCast(output, input, transform, iterator->GetShape()->GetChildCount());
+	}
+	if (hit){
+		normal_x = output->normal.x;
+		normal_y = output->normal.y;
+	}
 
 	return ret;
 }
 
 // TODO 3
+
+void ModulePhysics::BeginContact(b2Contact* contact) {
+
+	LOG("Contact");
+
+}
 
 // TODO 7: Call the listeners that are not NULL

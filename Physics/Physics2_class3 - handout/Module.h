@@ -4,7 +4,7 @@
 
 class Application;
 class PhysBody;
-
+class PhysBodies;
 class Module
 {
 private :
@@ -73,4 +73,8 @@ public:
 	}
 
 	// TODO 5: Create a OnCollision method that receives both PhysBodies
+
+	virtual bool OnCollision(PhysBodies* body1, PhysBodies* body2) {
+		return true;
+	}
 };

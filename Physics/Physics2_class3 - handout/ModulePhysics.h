@@ -28,12 +28,13 @@ public:
 	int width, height;
 	b2Body* body;
 	// TODO 6: Add a pointer to a module that might want to listen to a collision from this body
+	ModuleAudio* _audio = nullptr;
 };
 
 // Module --------------------------------------
 // TODO 3: Make module physics inherit from b2ContactListener
 // then override void BeginContact(b2Contact* contact)
-class ModulePhysics : public Module
+class ModulePhysics : public Module, public b2ContactListener
 {
 public:
 	ModulePhysics(Application* app, bool start_enabled = true);
@@ -48,6 +49,9 @@ public:
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size);
+
+	void BeginContact(b2Contact* contact);
+
 
 private:
 
