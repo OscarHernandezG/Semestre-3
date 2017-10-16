@@ -10,13 +10,19 @@ function [At, bt]= ownTriangulation(A,b)
 % 	bt: Modified independent term
 
 [n,m] = size(A)
-r =2;
+aux =2;
+aux2 = 0;
     for p = 1:1:m
-        for j = r:1:n
-    A(j,:) = A(j,:) * A(p, p) - A(p,:) * A(j, p)
-    b(j,:) = b(j,:) * A(p, p) - b(p,:) * A(j, p)
+        for j = aux:1:n   
+            aux2 = A(j, p);
+    A(j,:) = A(j,:) * A(p, p) - A(p,:) * aux2;
+    b(j,:) = b(j,:) * A(p, p) - b(p,:) * aux2;
         end
-        r = r+1;
+        aux = aux+1;
     end
+    
+    At = A
+    bt = b
+    
 end
 
