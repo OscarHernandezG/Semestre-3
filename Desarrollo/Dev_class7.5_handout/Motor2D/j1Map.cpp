@@ -44,36 +44,29 @@ void j1Map::PropagateBFS()
 		iPoint last_frontier;
 		frontier.Pop(last_frontier);
 
-		iPoint neighbor1 = { last_frontier.x + 1, last_frontier.y };
-		iPoint neighbor2 = { last_frontier.x - 1, last_frontier.y };
-		iPoint neighbor3 = { last_frontier.x, last_frontier.y+1 };
-		iPoint neighbor4 = { last_frontier.x, last_frontier.y -1};
+		p2List<iPoint> neighbors;
+
+		neighbors.add({ last_frontier.x + 1, last_frontier.y });
+		neighbors.add({ last_frontier.x - 1, last_frontier.y });
+		neighbors.add({ last_frontier.x, last_frontier.y + 1 });
+		neighbors.add({ last_frontier.x, last_frontier.y - 1 });
+
 
 		// TODO 2: For each neighbor, if not visited, add it
 		// to the frontier queue and visited list
 
-		if (visited.find(neighbor1) ==-1) {
-			frontier.Push({ neighbor1 });
-			visited.add(neighbor1);
-		}
-		if (visited.find(neighbor2) == -1) {
-			frontier.Push({ neighbor2 });
-			visited.add(neighbor2);
-		}
+		for (p2List_item<iPoint>* neighbor = neighbors.start; neighbor != nullptr; neighbor = neighbor->next) {
 
-		if (visited.find(neighbor3) == -1) {
-			frontier.Push({ neighbor3 });
-			visited.add(neighbor3);
-		}
+			if (visited.find(neighbor->data) == -1) {
+				if (IsWalkable(neighbor->data.x, neighbor->data.y)) {
+					frontier.Push({ neighbor->data });
+					visited.add(neighbor->data);
+				}
+			}
 
-		if (visited.find(neighbor4) == -1) {
-			frontier.Push({ neighbor4 });
-			visited.add(neighbor4);
 		}
 
 	}
-
-
 }
 
 void j1Map::DrawBFS()
@@ -114,11 +107,25 @@ bool j1Map::IsWalkable(int x, int y) const
 {
 	// TODO 3: return true only if x and y are within map limits
 	// and the tile is walkable (tile id 0 in the navigation layer)
+	bool ret = false;
+	MapLayer* Navigation_layer = nullptr;
+
+	for (p2List_item<MapLayer*>* layer = data.layers.start; layer != nullptr; layer = layer->next) {
+		for (p2List_item<Properties::Property*>* properties = layer->data->properties.list.start; properties != nullptr; properties = properties->next) {
+			if (properties->data->name == "Navigation") {
+				Navigation_layer = layer->data;
+			}
+		}
+	}
+	if (x<0 || y<0 || x>=data.width || y>=data.height) {
+		ret = false;
+	}
+	else if (Navigation_layer->Get(x, y) == 0) {
+		ret = true;
+	}
 
 
-
-
-	return true;
+	return ret;
 }
 
 void j1Map::Draw()
