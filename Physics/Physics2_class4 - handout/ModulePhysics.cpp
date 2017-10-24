@@ -196,8 +196,6 @@ update_status ModulePhysics::PostUpdate()
 
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
-	
-
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
 	{
 		for(b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
@@ -282,20 +280,20 @@ update_status ModulePhysics::PostUpdate()
 					def.maxForce = 100.0f * body_clicked->GetMass();
 
 					mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
+
+				//	body_clicked->SetAwake(true);
+
 				}
 			}
-			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && body_clicked!=nullptr) {
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && body_clicked != nullptr) {
 				b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
-				b2Vec2 bodypos = body_clicked->GetPosition();
-			//	bodypos.x = PIXEL_TO_METERS(bodypos.x);
-			//	bodypos.y = PIXEL_TO_METERS(bodypos.y);
+							
+				mouse_joint->SetTarget(mouse_position);
 
-				body_clicked->ApplyLinearImpulse(mouse_position, bodypos, true);
-
-				bodypos = body_clicked->GetPosition();
+				b2Vec2	bodypos = body_clicked->GetPosition();
 
 
-				App->renderer->DrawLine(METERS_TO_PIXELS(bodypos.x), METERS_TO_PIXELS(bodypos.y), App->input->GetMouseX(), App->input->GetMouseY(),255,0,0);
+				App->renderer->DrawLine(METERS_TO_PIXELS(bodypos.x), METERS_TO_PIXELS(bodypos.y), App->input->GetMouseX(), App->input->GetMouseY(), 255, 0, 0);
 			}
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP&& body_clicked != nullptr) {
 
