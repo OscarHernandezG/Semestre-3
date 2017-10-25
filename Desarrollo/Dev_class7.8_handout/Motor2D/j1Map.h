@@ -9,6 +9,8 @@
 #include "j1Module.h"
 
 #define COST_MAP 100
+#define heuristic(a, b) (abs(a.x - b.x) + abs(a.y - b.y))
+
 
 // ----------------------------------------------------
 struct Properties
@@ -136,6 +138,7 @@ public:
 	// Propagation style
 	void PropagateBFS();
 	void PropagateDijkstra();
+	void PropagateAStar();
 
 private:
 
@@ -150,6 +153,7 @@ private:
 public:
 
 	MapData data;
+	iPoint				goal{ 0,0 };
 
 private:
 
@@ -163,6 +167,7 @@ private:
 	p2List<iPoint>		breadcrumbs;
 	uint				cost_so_far[COST_MAP][COST_MAP];
 	p2DynArray<iPoint>	path;
+
 	SDL_Texture*		tile_x = nullptr;
 };
 
