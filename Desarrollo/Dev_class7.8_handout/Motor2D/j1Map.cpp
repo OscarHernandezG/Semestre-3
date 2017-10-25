@@ -49,11 +49,9 @@ void j1Map::Path(int x, int y)
 	path.Clear();
 	iPoint goal = WorldToMap(x, y);
 
-	// TODO 2: Follow the breadcrumps to goal back to the origin
-	// add each step into "path" dyn array (it will then draw automatically)
 path.PushBack(goal);
 
-	if (visited.find(goal) != -1) {
+	if (breadcrumbs.find(goal) != -1) {
 			iPoint current = goal;
 		while (current != iPoint{ 19,4 })
 		{
@@ -68,33 +66,69 @@ path.PushBack(goal);
 
 void j1Map::PropagateDijkstra()
 {
-	// TODO 3: Taking BFS as a reference, implement the Dijkstra algorithm
-	// use the 2 dimensional array "cost_so_far" to track the accumulated costs
-	// on each cell (is already reset to 0 automatically)
+	iPoint curr;
+	if (breadcrumbs.find(goal) == -1) {
+		if (frontier.Pop(curr))
+		{
+			iPoint neighbors[4];
+			neighbors[0].create(curr.x + 1, curr.y + 0);
+			neighbors[1].create(curr.x + 0, curr.y + 1);
+			neighbors[2].create(curr.x - 1, curr.y + 0);
+			neighbors[3].create(curr.x + 0, curr.y - 1);
+
+			for (uint i = 0; i < 4; ++i)
+			{
+				if (MovementCost(neighbors[i].x, neighbors[i].y) >= 0)
+				{
+					if (visited.find(neighbors[i]) == -1)
+					{
+						int new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
+
+						if (cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
+						{
+							cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
+							frontier.Push(neighbors[i], new_cost);
+							breadcrumbs.add(curr);
+							visited.add(neighbors[i]);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+void j1Map::PropagateAStar()
+{
 
 	iPoint curr;
-	if (frontier.Pop(curr))
-	{
-		iPoint neighbors[4];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-
-		for (uint i = 0; i < 4; ++i)
+	if(breadcrumbs.find(goal) == -1){
+		if (frontier.Pop(curr))
 		{
-			if (MovementCost(neighbors[i].x, neighbors[i].y) >= 0)
-			{
-				if (visited.find(neighbors[i]) == -1)
-				{
-					int new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
+			iPoint neighbors[4];
+			neighbors[0].create(curr.x + 1, curr.y + 0);
+			neighbors[1].create(curr.x + 0, curr.y + 1);
+			neighbors[2].create(curr.x - 1, curr.y + 0);
+			neighbors[3].create(curr.x + 0, curr.y - 1);
 
-					if (cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
+			for (uint i = 0; i < 4; ++i)
+			{
+				if (MovementCost(neighbors[i].x, neighbors[i].y) >= 0)
+				{
+					if (visited.find(neighbors[i]) == -1)
 					{
-						cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
-						frontier.Push(neighbors[i], new_cost);
-						breadcrumbs.add(curr);
-						visited.add(neighbors[i]);
+						int new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
+
+						if (cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
+						{
+							cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
+							//int priority = new_cost + 3*heuristic(neighbors[i],goal);
+							int priority = new_cost + (abs(neighbors[i].x - goal.x) + abs(neighbors[i].y - goal.y));
+							frontier.Push(neighbors[i], priority);
+							breadcrumbs.add(curr);
+							visited.add(neighbors[i]);
+						}
 					}
 				}
 			}
@@ -121,8 +155,6 @@ int j1Map::MovementCost(int x, int y) const
 
 void j1Map::PropagateBFS()
 {
-	// TODO 1: Record the direction to the previous node 
-	// with the new list "breadcrumps"
 	iPoint curr;
 	if (frontier.Pop(curr))
 	{
