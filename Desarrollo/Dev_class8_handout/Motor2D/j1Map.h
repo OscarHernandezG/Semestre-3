@@ -3,16 +3,12 @@
 
 #include "PugiXml/src/pugixml.hpp"
 #include "p2List.h"
-#include "p2DynArray.h"
-#include "p2PQueue.h"
 #include "p2Point.h"
 #include "j1Module.h"
 
-#define COST_MAP 100
-#define Manhattan(a, b) (abs(a.x - b.x) + abs(a.y - b.y))
-#define SquareDistance(a,b) sqrt(pow(a.y - a.x, 2)+pow(b.y - b.x, 2)
-
-
+// TODO 5: Create a generic structure to hold properties
+// TODO 7: Our custom properties should have one method
+// to ask for the value of a custom property
 // ----------------------------------------------------
 struct Properties
 {
@@ -116,7 +112,6 @@ public:
 
 	// Called before render is available
 	bool Awake(pugi::xml_node& conf);
-	bool Start();
 
 	// Called each loop iteration
 	void Draw();
@@ -129,17 +124,7 @@ public:
 
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
-
-	// Pathfinding
-	int MovementCost(int x, int y) const;
-	void ResetPath();
-	void DrawPath();
-	void Path(int x, int y);
-
-	// Propagation style
-	void PropagateBFS();
-	void PropagateDijkstra();
-	void PropagateAStar();
+	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
 private:
 
@@ -154,22 +139,12 @@ private:
 public:
 
 	MapData data;
-	iPoint				goal{ 0,0 };
 
 private:
 
 	pugi::xml_document	map_file;
 	p2SString			folder;
 	bool				map_loaded;
-
-	/// BFS
-	p2PQueue<iPoint>	frontier;
-	p2List<iPoint>		visited;
-	p2List<iPoint>		breadcrumbs;
-	uint				cost_so_far[COST_MAP][COST_MAP];
-	p2DynArray<iPoint>	path;
-	bool Continue = true;
-	SDL_Texture*		tile_x = nullptr;
 };
 
 #endif // __j1MAP_H__
