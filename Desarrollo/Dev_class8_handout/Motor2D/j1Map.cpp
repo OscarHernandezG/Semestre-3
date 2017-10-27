@@ -2,6 +2,7 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1Render.h"
+#include "j1FileSystem.h"
 #include "j1Textures.h"
 #include "j1Map.h"
 #include <math.h>
@@ -22,220 +23,8 @@ bool j1Map::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	folder.create(config.child("folder").child_value());
-	ResetPath();
 
 	return ret;
-}
-
-bool j1Map::Start()
-{
-	tile_x = App->tex->Load("maps/x.png");
-	return true;
-}
-
-void j1Map::ResetPath()
-{
-	frontier.Clear();
-	visited.clear();
-	breadcrumbs.clear();
-	frontier.Push(iPoint(19, 4), 0);
-	visited.add(iPoint(19, 4));
-	breadcrumbs.add(iPoint(19, 4));
-	memset(cost_so_far, 0, sizeof(uint) * COST_MAP * COST_MAP);
-}
-
-void j1Map::Path(int x, int y)
-{
-	path.Clear();
-	iPoint goal = WorldToMap(x, y);
-
-path.PushBack(goal);
-
-	if (breadcrumbs.find(goal) != -1) {
-			iPoint current = goal;
-		while (current != iPoint{ 19,4 })
-		{
-			int index = visited.find(current);
-			current = breadcrumbs[index];
-			path.PushBack(current);
-		}
-
-		path.PushBack(current);
-	}
-}
-
-void j1Map::PropagateDijkstra()
-{
-
-	iPoint curr;
-	if (frontier.Pop(curr))
-	{
-		iPoint neighbors[4];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-
-		for (uint i = 0; i < 4; ++i)
-		{
-			if (MovementCost(neighbors[i].x, neighbors[i].y) >= 0)
-			{
-				if (visited.find(neighbors[i]) == -1)
-				{
-					uint new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
-					if (cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y]) {
-						cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
-						frontier.Push(neighbors[i], new_cost);
-						visited.add(neighbors[i]);
-						breadcrumbs.add(curr);
-					}
-				}
-			}
-		}
-	}
-}
-
-
-void j1Map::PropagateAStar()
-{
-	iPoint curr;
-	if (visited.find(goal) == -1) {
-		Continue = true;
-		if (frontier.Pop(curr))
-		{
-			iPoint neighbors[4];
-			neighbors[0].create(curr.x + 1, curr.y + 0);
-			neighbors[1].create(curr.x + 0, curr.y + 1);
-			neighbors[2].create(curr.x - 1, curr.y + 0);
-			neighbors[3].create(curr.x + 0, curr.y - 1);
-
-			for (uint i = 0; i < 4; ++i)
-			{
-				if (MovementCost(neighbors[i].x, neighbors[i].y) >= 0)
-				{
-				//	if (visited.find(neighbors[i]) == -1)
-					{
-						int new_cost = cost_so_far[curr.x][curr.y] + MovementCost(neighbors[i].x, neighbors[i].y);
-
-						if (cost_so_far[neighbors[i].x][neighbors[i].y] == 0 || new_cost < cost_so_far[neighbors[i].x][neighbors[i].y])
-						{
-							cost_so_far[neighbors[i].x][neighbors[i].y] = new_cost;
-							int priority = new_cost + heuristic(neighbors[i], goal);
-							frontier.Push(neighbors[i], priority);
-							breadcrumbs.add(curr);
-							visited.add(neighbors[i]);
-						}
-					}
-				}
-			}
-		}
-	}
-	//iPoint curr;
-	//if (breadcrumbs.find(goal) == -1) {
-	//	if (frontier.Pop(curr))
-	//	{
-	//		iPoint neighbors[4];
-	//		neighbors[0].create(curr.x + 1, curr.y + 0);
-	//		neighbors[1].create(curr.x + 0, curr.y + 1);
-	//		neighbors[2].create(curr.x - 1, curr.y + 0);
-	//		neighbors[3].create(curr.x + 0, curr.y - 1);
-	//		for (uint i = 0; i < 4; ++i)
-	//		{
-	//			if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
-	//			{
-	//				if (visited.find(neighbors[i]) == -1)
-	//				{
-	//					frontier.Push(neighbors[i], heuristic(neighbors[i], goal));
-	//					visited.add(neighbors[i]);
-	//					breadcrumbs.add(curr);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-}
-
-int j1Map::MovementCost(int x, int y) const
-{
-	int ret = -1;
-
-	if (x >= 0 && x < data.width && y >= 0 && y < data.height)
-	{
-		int id = data.layers.start->next->data->Get(x, y);
-
-		if (id == 0)
-			ret = 0;
-		else
-			ret = 3;
-	}
-
-	return ret;
-}
-
-void j1Map::PropagateBFS()
-{
-	iPoint curr;
-	if (frontier.Pop(curr))
-	{
-		iPoint neighbors[4];
-		neighbors[0].create(curr.x + 1, curr.y + 0);
-		neighbors[1].create(curr.x + 0, curr.y + 1);
-		neighbors[2].create(curr.x - 1, curr.y + 0);
-		neighbors[3].create(curr.x + 0, curr.y - 1);
-
-		for (uint i = 0; i < 4; ++i)
-		{
-			if (MovementCost(neighbors[i].x, neighbors[i].y) > 0)
-			{
-				if (visited.find(neighbors[i]) == -1)
-				{
-					frontier.Push(neighbors[i], 0);
-					visited.add(neighbors[i]);
-					breadcrumbs.add(curr);
-				}
-			}
-		}
-	}
-}
-
-void j1Map::DrawPath()
-{
-	iPoint point;
-
-	// Draw visited
-	p2List_item<iPoint>* item = visited.start;
-
-	while(item)
-	{
-		point = item->data;
-		TileSet* tileset = GetTilesetFromTileId(26);
-
-		SDL_Rect r = tileset->GetTileRect(26);
-		iPoint pos = MapToWorld(point.x, point.y);
-
-		App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-
-		item = item->next;
-	}
-
-	// Draw frontier
-	for (uint i = 0; i < frontier.Count(); ++i)
-	{
-		point = *(frontier.Peek(i));
-		TileSet* tileset = GetTilesetFromTileId(25);
-
-		SDL_Rect r = tileset->GetTileRect(25);
-		iPoint pos = MapToWorld(point.x, point.y);
-
-		App->render->Blit(tileset->texture, pos.x, pos.y, &r);
-	}
-
-	// Draw path
-	for (uint i = 0; i < path.Count(); ++i)
-	{
-		iPoint pos = MapToWorld(path[i].x, path[i].y);
-		App->render->Blit(tile_x, pos.x, pos.y);
-	}
 }
 
 void j1Map::Draw()
@@ -243,14 +32,15 @@ void j1Map::Draw()
 	if(map_loaded == false)
 		return;
 
+	// TODO 4: Make sure we draw all the layers and not just the first one
 	p2List_item<MapLayer*>* item = data.layers.start;
 
 	for(; item != NULL; item = item->next)
 	{
 		MapLayer* layer = item->data;
 
-		if(layer->properties.Get("Nodraw") != 0)
-			continue;
+		//if(layer->properties.Get("Nodraw") != 0)
+			//continue;
 
 		for(int y = 0; y < data.height; ++y)
 		{
@@ -269,8 +59,6 @@ void j1Map::Draw()
 			}
 		}
 	}
-
-	DrawPath();
 }
 
 int Properties::Get(const char* value, int default_value) const
@@ -289,6 +77,9 @@ int Properties::Get(const char* value, int default_value) const
 
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
+	// TODO 3: Complete this method so we pick the right
+	// Tileset based on a tile id
+
 	p2List_item<TileSet*>* item = data.tilesets.start;
 	TileSet* set = item->data;
 
@@ -335,7 +126,7 @@ iPoint j1Map::WorldToMap(int x, int y) const
 
 	if(data.type == MAPTYPE_ORTHOGONAL)
 	{
-		ret.x = (x / data.tile_width);
+		ret.x = x / data.tile_width;
 		ret.y = y / data.tile_height;
 	}
 	else if(data.type == MAPTYPE_ISOMETRIC)
@@ -405,7 +196,11 @@ bool j1Map::Load(const char* file_name)
 	bool ret = true;
 	p2SString tmp("%s%s", folder.GetString(), file_name);
 
-	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
+	char* buf;
+	int size = App->fs->Load(tmp.GetString(), &buf);
+	pugi::xml_parse_result result = map_file.load_buffer(buf, size);
+
+	RELEASE(buf);
 
 	if(result == NULL)
 	{
@@ -645,6 +440,8 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 {
 	bool ret = false;
+	// TODO 6: Fill in the method to fill the custom properties from 
+	// an xml_node
 
 	pugi::xml_node data = node.child("properties");
 
@@ -661,6 +458,54 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 
 			properties.list.add(p);
 		}
+	}
+
+	return ret;
+}
+
+bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+{
+	bool ret = false;
+	p2List_item<MapLayer*>* item;
+	item = data.layers.start;
+
+	for(item = data.layers.start; item != NULL; item = item->next)
+	{
+		MapLayer* layer = item->data;
+
+		if(layer->properties.Get("Navigation", 0) == 0)
+			continue;
+
+		uchar* map = new uchar[layer->width*layer->height];
+		memset(map, 1, layer->width*layer->height);
+
+		for(int y = 0; y < data.height; ++y)
+		{
+			for(int x = 0; x < data.width; ++x)
+			{
+				int i = (y*layer->width) + x;
+
+				int tile_id = layer->Get(x, y);
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+				
+				if(tileset != NULL)
+				{
+					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					/*TileType* ts = tileset->GetTileType(tile_id);
+					if(ts != NULL)
+					{
+						map[i] = ts->properties.Get("walkable", 1);
+					}*/
+				}
+			}
+		}
+
+		*buffer = map;
+		width = data.width;
+		height = data.height;
+		ret = true;
+
+		break;
 	}
 
 	return ret;
