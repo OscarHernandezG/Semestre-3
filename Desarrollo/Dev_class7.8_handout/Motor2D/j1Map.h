@@ -9,7 +9,8 @@
 #include "j1Module.h"
 
 #define COST_MAP 100
-#define heuristic(a, b) (abs(a.x - b.x) + abs(a.y - b.y))
+#define Manhattan(a, b) (abs(a.x - b.x) + abs(a.y - b.y))
+#define SquareDistance(a,b) sqrt(pow(a.y - a.x, 2)+pow(b.y - b.x, 2)
 
 
 // ----------------------------------------------------
