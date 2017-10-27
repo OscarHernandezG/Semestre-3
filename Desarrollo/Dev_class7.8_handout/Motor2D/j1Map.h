@@ -167,7 +167,7 @@ private:
 	p2List<iPoint>		breadcrumbs;
 	uint				cost_so_far[COST_MAP][COST_MAP];
 	p2DynArray<iPoint>	path;
-
+	bool Continue = true;
 	SDL_Texture*		tile_x = nullptr;
 };
 
