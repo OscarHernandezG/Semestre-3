@@ -175,29 +175,55 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 		PathList open, close;
 
 		// Add the origin tile to open
-		PathNode Origin(1, origin.DistanceManhattan(destination), origin, nullptr);	
+		PathNode Origin(1, origin.DistanceManhattan(destination), origin, nullptr);
 		open.list.add(Origin);
 
 		// Iterate while we have tile in the open list
 		int min_score = open.list.start->data.Score();
-		for (p2List_item<PathNode>* iterator = open.list.start; iterator != nullptr; iterator = iterator->next) 
+		for (p2List_item<PathNode>* iterator = open.list.start; iterator != nullptr; iterator = iterator->next)
 		{
-			// TODO 3: Move the lowest score cell from open list to the closed list
-			if (iterator->data.Score() < min_score) 
-				min_score = iterator->data.Score();
-
-
-
-
 		}
-		
-	
-
+		while (open.list.)
+			// TODO 3: Move the lowest score cell from open list to the closed list
+			close.list.add(open.GetNodeLowestScore()->data);
+		open.list.del(open.GetNodeLowestScore());
 
 
 		// TODO 4: If we just added the destination, we are done!
 		// Backtrack to create the final path
 		// Use the Pathnode::parent and Flip() the path when you are finish
+
+		PathList path_list;
+		for (p2List_item<PathNode>* item = close.list.end; item->data.pos != origin; item = close.Find(item->data.parent->pos))
+		{
+			//last_path.PushBack(item->data.pos);
+			path_list.list.add(item->data);
+		}
+
+		path_list.list.add();
+
+
+
+		PathList Neighbours;
+
+		for (p2List_item<PathNode>* item = path_list.list.end; item != nullptr; item = item->prev)
+		{
+			item->data.FindWalkableAdjacents(Neighbours);
+			last_path.PushBack(item->data.pos);
+		}
+
+		for (p2List_item<PathNode>* item = path_list.list.start; item != nullptr; item = item->next)
+		{
+			if (close.Find(item->data.pos) != nullptr)
+				continue;
+
+			int F = item->data.CalculateF(destination);
+			open.list.add
+		}
+
+
+			last_path.PushBack(origin);
+			last_path.Flip();
 
 		// TODO 5: Fill a list of all adjancent nodes
 
