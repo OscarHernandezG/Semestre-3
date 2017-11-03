@@ -14,13 +14,18 @@
 #include "j1Pathfinding.h"
 #include "j1App.h"
 
+#include "j1Timer.h"
+
 // TODO 3: Measure the amount of ms that takes to execute:
 // App constructor, Awake, Start and CleanUp
 // LOG the result
 
+
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
+	timer.Start();
+
 	input = new j1Input();
 	win = new j1Window();
 	render = new j1Render();
@@ -42,6 +47,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	// render last to swap buffer
 	AddModule(render);
+
+	LOG("j1a")
 }
 
 // Destructor
