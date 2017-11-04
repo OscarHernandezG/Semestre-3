@@ -20,6 +20,11 @@ bool ModuleSceneIntro::Start()
 	// experiment with different camera placements, then use LookAt()
 	// to make it look at the center
 
+	App->camera->Position.y += 1;
+	App->camera->Position.x += 1;
+	App->camera->LookAt({ 0,0,0 });
+
+
 	return ret;
 }
 
@@ -38,8 +43,17 @@ update_status ModuleSceneIntro::Update()
 	// so you have to express the normal of the plane to create 
 	// a plane centered around 0,0. Make that it draw the axis for reference
 
+	Plane floor(0, 0, 0, 200);
+	floor.axis = true;
+	floor.Render();
+	
+
 	// TODO 6: Draw a sphere of 0.5f radius around the center
 	// Draw somewhere else a cube and a cylinder in wireframe
+
+	Sphere sphere(0.5f);
+	floor.Render();
+
 
 	return UPDATE_CONTINUE;
 }
