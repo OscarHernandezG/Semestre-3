@@ -52,7 +52,12 @@ update_status ModuleSceneIntro::Update()
 	// Draw somewhere else a cube and a cylinder in wireframe
 
 	Sphere sphere(0.5f);
-	floor.Render();
+	Color color;
+
+	color.Set(0, 1, 1, 0.0001);
+	sphere.color = color;
+	sphere.SetPos(0, 0, 0);
+	sphere.Render();
 
 
 	return UPDATE_CONTINUE;
