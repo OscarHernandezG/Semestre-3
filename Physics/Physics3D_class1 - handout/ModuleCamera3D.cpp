@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "glmath.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -42,48 +43,33 @@ update_status ModuleCamera3D::Update()
 	// TODO 3: Make the camera go up/down when pressing R (up) F(down)
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT)
-	{
-		App->camera->Position.y += 0.01f;
-		App->camera->LookAt({ 0,0,0 });
-	}
+		App->camera->Position.y += 0.02f;
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT)
-	{
-		App->camera->Position.y -= 0.01f;
-		App->camera->LookAt({ 0,0,0 });
-	}
+		App->camera->Position.y -= 0.02f;
+
 
 	// TODO 4: Make the camera go forward (w) and backward with (s)
 	// Note that the vectors X/Y/Z contain the current axis of the camera
 	// you can read them to modify Position
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-	{
-		App->camera->Position.z -= 0.01f;
-		App->camera->LookAt({ 0,0,0 });
-	}
+		App->camera->Position.z -= 0.02f;
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-	{
-		App->camera->Position.z += 0.01f;
-		App->camera->LookAt({ 0,0,0 });
-	}
+		App->camera->Position.z += 0.02f;
 
 	// TODO 5: Make the camera go left (a) and right with (d)
 	// Note that the vectors X/Y/Z contain the current axis of the camera
 	// you can read them to modify Position
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-	{
-		App->camera->Position.x -= 0.01f;
-		App->camera->LookAt({ 0,0,0 });
-	}
+		App->camera->Position.x -= 0.02f;
+
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-	{
-		App->camera->Position.x += 0.01f;
-		App->camera->LookAt({ 0,0,0 });
-	}
+		App->camera->Position.x += 0.02f;
+
 	
 	// Mouse motion ----------------
 	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
@@ -92,9 +78,14 @@ update_status ModuleCamera3D::Update()
 		int dy = -App->input->GetMouseYMotion();
 
 		// TODO (Homework): Rotate the camera with the mouse
+
+
 	}
 
 	// Recalculate matrix -------------
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+	App->camera->LookAt({ 0,0,0 });
+
 	CalculateViewMatrix();
 
 	return UPDATE_CONTINUE;

@@ -60,6 +60,10 @@ update_status ModuleSceneIntro::Update()
 	sphere.Render();
 
 
+	Cylinder cylinder(1, 5);
+	cylinder.wire = true;
+	cylinder.Render();
+
 	return UPDATE_CONTINUE;
 }
 
