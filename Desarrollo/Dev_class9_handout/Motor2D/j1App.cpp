@@ -24,7 +24,8 @@
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {
-	timer.Start();
+	perf_timer.Start();
+
 
 	input = new j1Input();
 	win = new j1Window();
@@ -48,7 +49,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	// render last to swap buffer
 	AddModule(render);
 
-	LOG("j1a")
+	LOG("j1App constructor time: %f ms", perf_timer.ReadMs());
 }
 
 // Destructor
@@ -75,6 +76,8 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
+	perf_timer.Start();
+
 	pugi::xml_document	config_file;
 	pugi::xml_node		config;
 	pugi::xml_node		app_config;
@@ -104,12 +107,17 @@ bool j1App::Awake()
 		}
 	}
 
+	LOG("j1App Awake time: %f ms", perf_timer.ReadMs());
+
 	return ret;
 }
 
 // Called before the first frame
 bool j1App::Start()
 {
+
+	perf_timer.Start();
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
@@ -119,12 +127,18 @@ bool j1App::Start()
 		ret = item->data->Start();
 		item = item->next;
 	}
+
+	LOG("j1app Start time: %f ms", perf_timer.ReadMs());
+
 	return ret;
 }
 
 // Called each loop iteration
 bool j1App::Update()
 {
+	perf_timer.Start();
+	timer.Start();
+
 	bool ret = true;
 	PrepareUpdate();
 
@@ -141,6 +155,7 @@ bool j1App::Update()
 		ret = PostUpdate();
 
 	FinishUpdate();
+
 	return ret;
 }
 
@@ -181,9 +196,9 @@ void j1App::FinishUpdate()
 	// Amount of frames during the last second
 
 	float avg_fps = 0.0f;
-	float seconds_since_startup = 0.0f;
+	float seconds_since_startup = timer.ReadSec();
 	float dt = 0.0f;
-	uint32 last_frame_ms = 0;
+	uint32 last_frame_ms = perf_timer.ReadMs();
 	uint32 frames_on_last_update = 0;
 	uint64 frame_count = 0;
 

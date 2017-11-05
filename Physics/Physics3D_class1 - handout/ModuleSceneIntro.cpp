@@ -62,6 +62,7 @@ update_status ModuleSceneIntro::Update()
 
 	Cylinder cylinder(1, 5);
 	cylinder.wire = true;
+	cylinder.SetPos(-4, 0, 0);
 	cylinder.Render();
 
 	return UPDATE_CONTINUE;

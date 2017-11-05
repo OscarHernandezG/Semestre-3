@@ -79,12 +79,16 @@ update_status ModuleCamera3D::Update()
 
 		// TODO (Homework): Rotate the camera with the mouse
 
+		vec3 new_pos;
 
+		App->camera->Position = rotate(App->camera->Position, dx*0.1, { 1,1,1 });
+		LOG("%i", App->camera->Position);
 	}
 
 	// Recalculate matrix -------------
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
 	App->camera->LookAt({ 0,0,0 });
+	
 
 	CalculateViewMatrix();
 
