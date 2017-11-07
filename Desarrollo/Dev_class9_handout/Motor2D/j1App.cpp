@@ -136,8 +136,6 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
-	perf_timer.Start();
-	timer.Start();
 
 	bool ret = true;
 	PrepareUpdate();
@@ -155,6 +153,7 @@ bool j1App::Update()
 		ret = PostUpdate();
 
 	FinishUpdate();
+
 
 	return ret;
 }
@@ -195,15 +194,17 @@ void j1App::FinishUpdate()
 	// Amount of ms took the last update
 	// Amount of frames during the last second
 
-	float avg_fps = 0.0f;
+	
 	float seconds_since_startup = timer.ReadSec();
-	float dt = 0.0f;
-	uint32 last_frame_ms = perf_timer.ReadMs();
-	uint32 frames_on_last_update = 0;
-	uint64 frame_count = 0;
+	float dt = perf_timer.ReadMs();
+	uint32 last_frame_ms = dt;
+	perf_timer.Start();
+	float avg_fps = frame_count / seconds_since_startup;
+	uint32 frames_on_last_update = 1;
+	frame_count += frames_on_last_update;
 
 	static char title[256];
-	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %02u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
+	sprintf_s(title, 256, "Av.FPS: %.2f\t Last Frame Ms: %02u\t Last sec frames: %i\t Last dt: %.3f\t Time since startup: %.3f\t Frame Count: %lu ",
 			  avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
 
 	App->win->SetTitle(title);

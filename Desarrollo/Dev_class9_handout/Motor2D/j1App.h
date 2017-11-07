@@ -105,6 +105,8 @@ private:
 	j1PerfTimer			perf_timer;
 	j1Timer				timer;
 
+	uint64 frame_count = 0;
+
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S
