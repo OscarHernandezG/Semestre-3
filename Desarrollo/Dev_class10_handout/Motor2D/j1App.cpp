@@ -85,8 +85,11 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
-
+		max_fps = app_config.attribute("framerate_cap").as_int();
 		// TODO 1: Read from config file your framerate cap
+		if (!max_fps > 0) {
+			max_fps = 60;
+		}
 	}
 
 	if(ret == true)
@@ -202,7 +205,11 @@ void j1App::FinishUpdate()
 	App->win->SetTitle(title);
 
 	// TODO 2: Use SDL_Delay to make sure you get your capped framerate
-
+	j1PerfTimer delay;
+	int delay_time = WaitToFrame(last_frame_ms);
+	delay.Start();
+	SDL_Delay(delay_time);
+	LOG("We waited for %i milliseconds and got back in %f",delay_time, delay.ReadMs());
 	// TODO3: Measure accurately the amount of time it SDL_Delay actually waits compared to what was expected
 }
 
@@ -416,4 +423,15 @@ bool j1App::SavegameNow() const
 	data.reset();
 	want_to_save = false;
 	return ret;
+}
+
+int j1App::WaitToFrame(uint32 last_frame_ms) {
+
+	float frame_time = 1;
+	frame_time /= max_fps;
+	frame_time *= 1000000;
+	float time_to_wait = frame_time - last_frame_ms;
+	time_to_wait /= 1000;
+
+	return time_to_wait;
 }
