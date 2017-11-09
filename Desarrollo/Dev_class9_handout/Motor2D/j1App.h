@@ -102,6 +102,7 @@ private:
 	bool				want_to_load = false;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+
 	j1PerfTimer			perf_timer;
 	j1Timer				timer;
 

@@ -24,7 +24,7 @@ public:
 	bool PreUpdate();
 
 	// Called each loop iteration
-	bool Update();
+	bool Update(double dt);
 
 	// Called before all Updates
 	bool PostUpdate();
@@ -34,6 +34,11 @@ public:
 
 private:
 	SDL_Texture* debug_tex;
+
+	fPoint fcamera;
+
+	int speed;
+
 };
 
 #endif // __j1SCENE_H__

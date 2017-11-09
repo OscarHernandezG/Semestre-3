@@ -50,6 +50,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(render);
 
 	LOG("j1App constructor time: %f ms", perf_timer.ReadMs());
+	int i = 0;
 }
 
 // Destructor

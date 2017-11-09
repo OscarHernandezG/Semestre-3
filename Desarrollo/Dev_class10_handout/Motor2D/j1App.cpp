@@ -78,18 +78,17 @@ bool j1App::Awake()
 		
 	config = LoadConfig(config_file);
 
-	if(config.empty() == false)
+	if (config.empty() == false)
 	{
 		// self-config
 		ret = true;
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
-		max_fps = app_config.attribute("framerate_cap").as_int();
+		framerate_cap = app_config.attribute("framerate_cap").as_uint();
 		// TODO 1: Read from config file your framerate cap
-		if (!max_fps > 0) {
-			max_fps = 60;
-		}
+		if (framerate_cap == 0)
+			fps_cap = false;
 	}
 
 	if(ret == true)
@@ -125,6 +124,8 @@ bool j1App::Start()
 	startup_time.Start();
 
 	PERF_PEEK(ptimer);
+
+	dttimer.ReadMs();
 
 	return ret;
 }
@@ -169,11 +170,16 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	dt = dttimer.ReadMs() / 1000;
+	dttimer.Start();
+
+	LOG("%f", dt);
 	frame_count++;
 	last_sec_frame_count++;
 
 	// TODO 4: Calculate the dt: differential time since last frame
 	frame_time.Start();
+
 }
 
 // ---------------------------------------------
@@ -205,12 +211,24 @@ void j1App::FinishUpdate()
 	App->win->SetTitle(title);
 
 	// TODO 2: Use SDL_Delay to make sure you get your capped framerate
-	j1PerfTimer delay;
-	int delay_time = WaitToFrame(last_frame_ms);
-	delay.Start();
-	SDL_Delay(delay_time);
-	LOG("We waited for %i milliseconds and got back in %f",delay_time, delay.ReadMs());
-	// TODO3: Measure accurately the amount of time it SDL_Delay actually waits compared to what was expected
+
+	if (fps_cap) {
+		j1PerfTimer delay;
+		int delay_time = WaitToFrame(last_frame_ms);
+		delay.Start();
+		
+		if (delay_time > 0)
+		{
+			// TODO3: Measure accurately the amount of time it SDL_Delay actually waits compared to what was expected
+			j1PerfTimer delay;
+			int delay_time = WaitToFrame(last_frame_ms);
+			LOG("We waited for %i milliseconds and got back in %f", delay_time, delay.ReadMs());
+			SDL_Delay(delay_time);
+		}
+		
+	}
+
+
 }
 
 // Call modules before each loop iteration
@@ -254,7 +272,7 @@ bool j1App::DoUpdate()
 		// TODO 5: send dt as an argument to all updates
 		// you will need to update module parent class
 		// and all modules that use update
-		ret = item->data->Update();
+		ret = item->data->Update(dt);
 	}
 
 	return ret;
@@ -425,13 +443,7 @@ bool j1App::SavegameNow() const
 	return ret;
 }
 
-int j1App::WaitToFrame(uint32 last_frame_ms) {
-
-	float frame_time = 1;
-	frame_time /= max_fps;
-	frame_time *= 1000000;
-	float time_to_wait = frame_time - last_frame_ms;
-	time_to_wait /= 1000;
-
-	return time_to_wait;
+int j1App::WaitToFrame(uint32 last_frame_ms)
+{
+	return ((float)(1000 / framerate_cap) - last_frame_ms);
 }
