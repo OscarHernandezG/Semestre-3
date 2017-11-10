@@ -90,6 +90,9 @@ public:
 	j1Map*				map = NULL;
 	j1PathFinding*		pathfinding = NULL;
 
+	uint32				framerate_cap;
+	bool				fps_cap = true;
+
 private:
 
 	p2List<j1Module*>	modules;
@@ -112,9 +115,6 @@ private:
 	j1Timer				last_sec_frame_time;
 	uint32				last_sec_frame_count = 0;
 	uint32				prev_last_sec_frame_count = 0;
-
-	uint32				framerate_cap;
-	bool				fps_cap = true;
 
 	double				dt;
 };

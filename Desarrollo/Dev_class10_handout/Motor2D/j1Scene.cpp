@@ -90,6 +90,15 @@ bool j1Scene::Update(double dt)
 	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		App->SaveGame("save_game.xml");
 
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+		App->framerate_cap = 10;
+
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+		App->framerate_cap = 60;
+
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+		App->fps_cap = !App->fps_cap;
+
 	// TODO 6: Make the camera movement independent of framerate
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		fcamera.y += (float)(speed * dt);
