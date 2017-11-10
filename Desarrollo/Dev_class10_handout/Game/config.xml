@@ -1,13 +1,13 @@
 <!-- Config file for the game -->
 
 <config>
-  <app framerate_cap="100">
+  <app framerate_cap="120">
     <title>Game Development Testbed</title>
     <organization>UPC</organization>
   </app>
 	
   <renderer>
-    <vsync value="false"/>
+    <vsync value="true"/>
   </renderer>
 
   <window>

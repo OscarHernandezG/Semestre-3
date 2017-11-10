@@ -14,6 +14,8 @@
 #include "j1Pathfinding.h"
 #include "j1App.h"
 
+#include "Brofiler/Brofiler.h"
+
 // TODO 3: Add Brofiler categories to all Update methods
 
 // Constructor
@@ -136,6 +138,8 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::AliceBlue)
+
 	bool ret = true;
 	PrepareUpdate();
 
@@ -219,6 +223,8 @@ void j1App::FinishUpdate()
 // Call modules before each loop iteration
 bool j1App::PreUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Gray)
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
@@ -241,6 +247,8 @@ bool j1App::PreUpdate()
 // Call modules on each loop iteration
 bool j1App::DoUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Green)
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
@@ -263,6 +271,8 @@ bool j1App::DoUpdate()
 // Call modules after each loop iteration
 bool j1App::PostUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Red)
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	j1Module* pModule = NULL;
