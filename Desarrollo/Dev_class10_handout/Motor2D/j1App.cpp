@@ -85,10 +85,9 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
-		framerate_cap = app_config.attribute("framerate_cap").as_uint();
+		framerate_cap = app_config.attribute("framerate_cap").as_uint(0);
 		// TODO 1: Read from config file your framerate cap
-		if (framerate_cap == 0)
-			fps_cap = false;
+
 	}
 
 	if(ret == true)
@@ -212,7 +211,7 @@ void j1App::FinishUpdate()
 
 	// TODO 2: Use SDL_Delay to make sure you get your capped framerate
 
-	if (fps_cap) {
+	if (framerate_cap > 0) {
 		j1PerfTimer delay;
 		int delay_time = WaitToFrame(last_frame_ms);
 		delay.Start();
