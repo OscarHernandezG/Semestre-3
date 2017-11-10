@@ -219,7 +219,6 @@ void j1App::FinishUpdate()
 		if (delay_time > 0)
 		{
 			// TODO3: Measure accurately the amount of time it SDL_Delay actually waits compared to what was expected
-			j1PerfTimer delay;
 			int delay_time = WaitToFrame(last_frame_ms);
 			LOG("We waited for %i milliseconds and got back in %f", delay_time, delay.ReadMs());
 			SDL_Delay(delay_time);
