@@ -27,6 +27,10 @@ public:
 
 	PhysBody3D* AddBody(const Sphere& sphere, float mass = 1.0f);
 
+	// TODO 1
+	p2List<PhysBody3D*> BodysList;
+	p2List<btCollisionShape*> colShapesList;
+
 private:
 
 	bool debug;
@@ -38,7 +42,7 @@ private:
 	btDiscreteDynamicsWorld*			world;
 	DebugDrawer*						debug_draw;
 
-	// TODO 1
+	
 };
 
 class DebugDrawer : public btIDebugDraw
@@ -57,4 +61,6 @@ public:
 	DebugDrawModes mode;
 	Line line;
 	Primitive point;
+	
+
 };
