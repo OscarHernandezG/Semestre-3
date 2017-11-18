@@ -36,7 +36,8 @@ int main(int argc, char* args[])
 
 	while(state != EXIT)
 	{
-		BROFILER_FRAME("Factory Escape");
+		BROFILER_FRAME("Factory Escape")
+
 		switch(state)
 		{
 

@@ -30,6 +30,20 @@ bool ModuleSceneIntro::Start()
 	
 	App->physics->AddBody(sphere, 1);
 
+	sphere.radius = 2;
+	sphere.color = { 0,1,0,0.001f };
+	sphere.SetPos(0, 6, 0);
+
+
+	App->physics->AddBody(sphere, 1);
+
+	sphere.radius = 2;
+	sphere.color = { 0,1,0,0.001f };
+	sphere.SetPos(2, 50, 0);
+
+
+	App->physics->AddBody(sphere, 1);
+
 
 
 	// TODO 5: Add this module to the list of collision listeners
@@ -56,10 +70,20 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	// TODO 4: update the transform of the shape to meet the
 	// physics one
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_REPEAT) {
+
+		sphere.radius = 2;
+		sphere.color = { 0,1,0,0.001f };
+		sphere.SetPos(2, 50, 0);
+		
+		App->physics->AddBody(sphere, 1);
+
+	}
+
 
 	for (p2List_item<PhysBody3D*>* CurrNode = App->physics->BodysList.getFirst(); CurrNode != nullptr; CurrNode = CurrNode->next)
 	{
-		CurrNode->data->GetTransform(sphere.transform.M);
+//		CurrNode->data->GetTransform(sphere.transform.M);
 		sphere.Render();
 	}
 	
