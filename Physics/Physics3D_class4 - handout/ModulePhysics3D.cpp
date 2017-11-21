@@ -173,6 +173,14 @@ bool ModulePhysics3D::CleanUp()
 
 	// TODO: Remember to clean free all memeory from constraints
 
+	p2List_item<btTypedConstraint*>* c_item = constraints.getFirst();
+	while (c_item)
+	{
+		delete c_item->data;
+		c_item = c_item->next;
+	}
+	constraints.clear();
+
 	delete world;
 
 	return true;
@@ -204,6 +212,32 @@ PhysBody3D* ModulePhysics3D::AddBody(const Sphere& sphere, float mass)
 
 	return pbody;
 }
+
+void ModulePhysics3D::AddConstraint(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& pa, const vec3& pb)
+{
+	btVector3 vecA(pa.x, pa.y, pa.z);
+	btVector3 vecB(pb.x, pb.y, pb.z);
+
+	btPoint2PointConstraint* constraint = new btPoint2PointConstraint(*bodyA.body, *bodyB.body, vecA, vecB);
+	world->addConstraint(constraint);
+	constraints.add(constraint);
+
+}
+
+void ModulePhysics3D::AddHingeConstraint(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& pa, const vec3& pb)
+{
+	btVector3 vecA(pa.x, pa.y, pa.z);
+	btVector3 vecB(pb.x, pb.y, pb.z);
+	btVector3 vecC(0, 1, 0);
+	
+
+	btHingeConstraint* hconstraint = new btHingeConstraint(*bodyA.body, *bodyB.body, vecA,vecB, vecC, vecC);
+
+	world->addConstraint(hconstraint);
+	constraints.add(hconstraint);
+	
+}
+
 
 // ---------------------------------------------------------
 
@@ -243,3 +277,4 @@ int	 DebugDrawer::getDebugMode() const
 {
 	return mode;
 }
+
