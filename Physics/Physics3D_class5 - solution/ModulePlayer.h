@@ -3,6 +3,8 @@
 #include "Globals.h"
 #include "p2Point.h"
 
+
+
 struct PhysVehicle3D;
 
 #define MAX_ACCELERATION 5000.0f
@@ -25,4 +27,10 @@ public:
 	float turn;
 	float acceleration;
 	float brake;
+
+	vec3 last_pos{ 0,0,0 };
+	vec3 new_pos;
+
+	bool ft = true;
+
 };

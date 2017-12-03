@@ -5,6 +5,8 @@
 #include "PhysVehicle3D.h"
 #include "PhysBody3D.h"
 
+#include "PlayerHelper.h"
+
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled), vehicle(NULL)
 {
 	turn = acceleration = brake = 0.0f;
@@ -111,6 +113,8 @@ bool ModulePlayer::Start()
 	vehicle = App->physics->AddVehicle(car);
 	vehicle->SetPos(0, 12, 10);
 	
+
+
 	return true;
 }
 
@@ -125,6 +129,40 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update(float dt)
 {
+
+	if (ft) {
+
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		tinyobj::attrib_t attrib;
+		std::string err;
+		bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, "models/Avent.obj", "models/", false);
+
+		attribute = attrib;
+
+		ft = !ft;
+	}
+
+	else {
+		glLineWidth(1.0f);
+
+		glBegin(GL_LINE_STRIP);
+		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		for (size_t v = 0; v < attribute.vertices.size() / 3; v++) {
+
+			glVertex3f(attribute.vertices[3 * v + 0] * 2, attribute.vertices[3 * v + 1] * 2, attribute.vertices[3 * v + 2] * 2);
+
+
+		//	glColor3f(1, 1, 0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		
+		}
+	glEnd();
+		
+	}
+
+
+
 	turn = acceleration = brake = 0.0f;
 
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
@@ -172,8 +210,13 @@ update_status ModulePlayer::Update(float dt)
 	float* matrix = new float[20];
 
 	vehicle->GetTransform(matrix);
-	App->camera->LookAt(vec3(matrix[12], matrix[13], matrix[14]));
-	App->camera->Move(vec3(matrix[4], matrix[5], matrix[6]));
+	new_pos = vec3(matrix[12], matrix[13], matrix[14]);
+	//App->camera->LookAt(new_pos);
+
+	vec3 move = new_pos - last_pos;
+	
+	last_pos = new_pos;
+	App->camera->Move(move);
 
 	char title[80];
 	sprintf_s(title, "%.1f Km/h", vehicle->GetKmh());

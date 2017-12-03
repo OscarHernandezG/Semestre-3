@@ -10,7 +10,8 @@ enum PrimitiveTypes
 	Primitive_Plane,
 	Primitive_Cube,
 	Primitive_Sphere,
-	Primitive_Cylinder
+	Primitive_Cylinder,
+	CAR
 };
 
 class Primitive
@@ -88,6 +89,17 @@ class Plane : public Primitive
 public:
 	Plane();
 	Plane(float x, float y, float z, float d);
+	void InnerRender() const;
+public:
+	vec3 normal;
+	float constant;
+};
+
+class Car : public Primitive
+{
+public:
+	Car();
+	Car(float x, float y, float z, float d);
 	void InnerRender() const;
 public:
 	vec3 normal;
