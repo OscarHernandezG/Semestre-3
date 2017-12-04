@@ -226,12 +226,15 @@ typedef struct {
   mesh_t mesh;
 } shape_t;
 
+struct vertex_index;
+
 // Vertex attributes
 typedef struct {
   std::vector<real_t> vertices;   // 'v'
   std::vector<real_t> normals;    // 'vn'
   std::vector<real_t> texcoords;  // 'vt'
   std::vector<real_t> colors;     // extension: vertex colors
+  std::vector<std::vector<vertex_index> > faces;
 } attrib_t;
 
 typedef struct callback_t_ {
@@ -369,11 +372,11 @@ namespace tinyobj {
 MaterialReader::~MaterialReader() {}
 
 struct vertex_index {
-  int v_idx, vt_idx, vn_idx;
-  vertex_index() : v_idx(-1), vt_idx(-1), vn_idx(-1) {}
-  explicit vertex_index(int idx) : v_idx(idx), vt_idx(idx), vn_idx(idx) {}
-  vertex_index(int vidx, int vtidx, int vnidx)
-      : v_idx(vidx), vt_idx(vtidx), vn_idx(vnidx) {}
+	int v_idx, vt_idx, vn_idx;
+	vertex_index() : v_idx(-1), vt_idx(-1), vn_idx(-1) {}
+	explicit vertex_index(int idx) : v_idx(idx), vt_idx(idx), vn_idx(idx) {}
+	vertex_index(int vidx, int vtidx, int vnidx)
+		: v_idx(vidx), vt_idx(vtidx), vn_idx(vnidx) {}
 };
 
 struct tag_sizes {
@@ -1635,8 +1638,9 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
       // replace with emplace_back + std::move on C++11
       faceGroup.push_back(std::vector<vertex_index>());
+	  attrib->faces.push_back(std::vector<vertex_index>());
       faceGroup[faceGroup.size() - 1].swap(face);
-
+	  attrib->faces[attrib->faces.size() - 1].swap(face);
       continue;
     }
 

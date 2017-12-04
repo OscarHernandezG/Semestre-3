@@ -132,31 +132,33 @@ update_status ModulePlayer::Update(float dt)
 
 	if (ft) {
 
-		std::vector<tinyobj::shape_t> shapes;
-		std::vector<tinyobj::material_t> materials;
-		tinyobj::attrib_t attrib;
-		std::string err;
-		bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, "models/Avent.obj", "models/", false);
 
-		attribute = attrib;
-
+		bool ret = tinyobj::LoadObj(&attribute, &shapes, &materials, &err, "models/Avent.obj", "models/", true);
+		
 		ft = !ft;
 	}
 
 	else {
 		glLineWidth(1.0f);
+		glPointSize(2.0f);
 
-		glBegin(GL_LINE_STRIP);
+		glBegin(GL_LINES);
 		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-		for (size_t v = 0; v < attribute.vertices.size() / 3; v++) {
+//		for (size_t v = 0; v < attribute.vertices.size() / 3;) {
+//			
+//			glVertex3f(attribute.vertices[3 * v + 0] * 2, attribute.vertices[3 * v + 1] * 2, attribute.vertices[3 * v + 2] * 2);
+//			
+//		//	glColor3f(1, 1, 0);
+////			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//		
+//		}
 
-			glVertex3f(attribute.vertices[3 * v + 0] * 2, attribute.vertices[3 * v + 1] * 2, attribute.vertices[3 * v + 2] * 2);
-
-
-		//	glColor3f(1, 1, 0);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		
+		for (size_t v = 0; v < shapes.size(); v++) {
+			for (int i = 0; i < shapes[v].mesh.indices.size()/3; i++)
+			glVertex3f(attribute.vertices[shapes[v].mesh.indices[i*3].vertex_index] * 2, attribute.vertices[shapes[v].mesh.indices[i*3+1].vertex_index] * 2, attribute.vertices[shapes[v].mesh.indices[i*3+2].vertex_index] * 2);
 		}
+
+
 	glEnd();
 		
 	}

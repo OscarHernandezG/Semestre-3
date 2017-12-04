@@ -15,3 +15,8 @@
 
 tinyobj::attrib_t attribute;
 
+std::vector<tinyobj::shape_t> shapes;
+std::vector<tinyobj::material_t> materials;
+tinyobj::attrib_t attrib;
+std::string err;
+
