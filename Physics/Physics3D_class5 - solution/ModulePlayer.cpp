@@ -130,38 +130,7 @@ bool ModulePlayer::CleanUp()
 update_status ModulePlayer::Update(float dt)
 {
 
-	if (ft) {
 
-
-		bool ret = tinyobj::LoadObj(&attribute, &shapes, &materials, &err, "models/Avent.obj", "models/", true);
-		
-		ft = !ft;
-	}
-
-	else {
-		glLineWidth(1.0f);
-		glPointSize(2.0f);
-
-		glBegin(GL_LINES);
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-//		for (size_t v = 0; v < attribute.vertices.size() / 3;) {
-//			
-//			glVertex3f(attribute.vertices[3 * v + 0] * 2, attribute.vertices[3 * v + 1] * 2, attribute.vertices[3 * v + 2] * 2);
-//			
-//		//	glColor3f(1, 1, 0);
-////			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//		
-//		}
-
-		for (size_t v = 0; v < shapes.size(); v++) {
-			for (int i = 0; i < shapes[v].mesh.indices.size()/3; i++)
-			glVertex3f(attribute.vertices[shapes[v].mesh.indices[i*3].vertex_index] * 2, attribute.vertices[shapes[v].mesh.indices[i*3+1].vertex_index] * 2, attribute.vertices[shapes[v].mesh.indices[i*3+2].vertex_index] * 2);
-		}
-
-
-	glEnd();
-		
-	}
 
 
 
@@ -219,6 +188,40 @@ update_status ModulePlayer::Update(float dt)
 	
 	last_pos = new_pos;
 	App->camera->Move(move);
+
+	if (ft) {
+
+
+		bool ret = tinyobj::LoadObj(&attribute, &shapes, &materials, &err, "models/Avent.obj", "models/", true);
+
+		ft = !ft;
+	}
+
+	else {
+		glLineWidth(1.0f);
+		glPointSize(2.0f);
+
+		glBegin(GL_POINTS);
+		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		for (size_t v = 0; v < attribute.vertices.size() / 3; v++) {
+
+			glVertex3f(attribute.vertices[3 * v + 0] * 2 + matrix[12], attribute.vertices[3 * v + 1] * 2 + matrix[12], attribute.vertices[3 * v + 2] * 2 + matrix[12]);
+
+			//	glColor3f(1, 1, 0);
+			//			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		}
+		glEnd();
+
+		//for (size_t v = 0; v < shapes.size(); v++) {
+		//	for (int i = 0; i < shapes[v].mesh.indices.size()/3; i++)
+		//	glVertex3f(attribute.vertices[shapes[v].mesh.indices[i*3].vertex_index] * 2, attribute.vertices[shapes[v].mesh.indices[i*3+1].vertex_index] * 2, attribute.vertices[shapes[v].mesh.indices[i*3+2].vertex_index] * 2);
+		//}
+
+
+
+
+	}
 
 	char title[80];
 	sprintf_s(title, "%.1f Km/h", vehicle->GetKmh());
