@@ -22,9 +22,10 @@ function varargout = exercise1(varargin)
 
 % Edit the above text to modify the response to help exercise1
 
-% Last Modified by GUIDE v2.5 23-Nov-2017 17:02:57
+% Last Modified by GUIDE v2.5 09-Dec-2017 15:59:22
 
 % Begin initialization code - DO NOT EDIT
+
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -79,8 +80,9 @@ function q_a0_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of q_a0 as text
+% Hints: gte(hObject,'String') returns contents of q_a0 as text
 %        str2double(get(hObject,'String')) returns contents of q_a0 as a double
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -97,18 +99,18 @@ end
 
 
 
-function p_a1_Callback(hObject, eventdata, handles)
-% hObject    handle to p_a1 (see GCBO)
+function q_a1_Callback(hObject, eventdata, handles)
+% hObject    handle to q_a1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of p_a1 as text
-%        str2double(get(hObject,'String')) returns contents of p_a1 as a double
+% Hints: get(hObject,'String') returns contents of q_a1 as text
+%        str2double(get(hObject,'String')) returns contents of q_a1 as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function p_a1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to p_a1 (see GCBO)
+function q_a1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to q_a1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -150,6 +152,7 @@ function q_a2_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of q_a2 as text
 %        str2double(get(hObject,'String')) returns contents of q_a2 as a double
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -347,3 +350,35 @@ function q_c2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in Calculate.
+function Calculate_Callback(hObject, eventdata, handles)
+% hObject    handle to Calculate (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+q_a0 = str2double(get(handles.q_a0,'String'))
+q_a1 = str2double(get(handles.q_a1,'String'))
+q_a2 = str2double(get(handles.q_a2,'String'))
+q_a3 = str2double(get(handles.q_a3,'String'))
+
+q_b0 = str2double(get(handles.q_b0,'String'))
+q_b1 = str2double(get(handles.q_b1,'String'))
+q_b2 = str2double(get(handles.q_b2,'String'))
+q_b3 = str2double(get(handles.q_b3,'String'))
+
+q_c = quaternionproduct([q_a0;q_a1;q_a2;q_a3],[q_b0;q_b1;q_b2;q_b3])
+
+set(handles.q_c0,'String', q_c(1,1))
+set(handles.q_c1,'String', q_c(2,1))
+set(handles.q_c2,'String', q_c(3,1))
+set(handles.q_c3,'String', q_c(4,1))
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over q_c0.
+function q_c0_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to q_c0 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
