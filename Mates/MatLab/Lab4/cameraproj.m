@@ -13,4 +13,3 @@ for q = 1: Np
     Pt(:,q) = dummy(1:2)/dummy(3)*f; %Points on the image plane
 
 end
-
